@@ -1,2 +1,6 @@
+numpy
+pandas
+scikit-learn
+chembl-webresource-client
 streamlit
 streamlit-ketcher
