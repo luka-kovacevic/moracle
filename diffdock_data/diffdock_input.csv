@@ -1,6 +1,4 @@
-complex_name,ligand_description,protein_path,protein_sequence
-complex_295400405,Cc1onc(-c2ccccc2)c1C(=O)N1CCC[C@@H](c2cccc(-c3ccc(C4CCCC4)cc3)c2)[C@@H]1C(=O)N[Dy],../diffdock_data/proteins/BRD4.pdb,
-complex_296218439,O=C(N[Dy])c1cccc(I)c1Nc1nc(Nc2cncc(F)c2)nc(Nc2ccc3[nH]c(=O)[nH]c3c2)n1,../diffdock_data/proteins/BRD4.pdb,
-complex_296455904,COC(CNc1nc(Nc2nc(Cl)c(C=O)c(Cl)n2)nc(Nc2ccccc2C(=O)c2ccccc2C(=O)N[Dy])n1)C1CCOC1,../diffdock_data/proteins/BRD4.pdb,
-complex_295990864,O=C(N[Dy])c1cc(-c2cncc(C(F)(F)F)c2)nc(N2CC[C@@H](NC(=O)C3CCCCO3)C2)c1,../diffdock_data/proteins/BRD4.pdb,
-complex_295393345,CCCCOc1cccc(-c2cccc([C@@H]3CCCN(C(=O)c4cc5c(F)cccc5[nH]4)[C@H]3C(=O)N[Dy])c2)c1F,../diffdock_data/proteins/HSA.pdb,
+ligand_description,protein_path,complex_name,protein_sequence
+Cc1onc(-c2ccccc2)c1C(=O)N1CCC[C@@H](c2cccc(-c3ccc(C4CCCC4)cc3)c2)[C@@H]1C(=O)N[Dy],../diffdock_data/proteins/BRD4.pdb,complex_1,
+O=C(N[Dy])c1cccc(I)c1Nc1nc(Nc2cncc(F)c2)nc(Nc2ccc3[nH]c(=O)[nH]c3c2)n1,../diffdock_data/proteins/BRD4.pdb,complex_2,
+COC(CNc1nc(Nc2nc(Cl)c(C=O)c(Cl)n2)nc(Nc2ccccc2C(=O)c2ccccc2C(=O)N[Dy])n1)C1CCOC1,../diffdock_data/proteins/BRD4.pdb,complex_3,
