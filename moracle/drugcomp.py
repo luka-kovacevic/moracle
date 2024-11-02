@@ -31,6 +31,7 @@ class Drug:
                                 indication=drug["indication_class"],
                                 first_approval=drug["first_approval"]), drug["similarity"]) for drug in res]
         
+        
         curr_drug = [drug for drug, sim in sim_drugs_list if (drug.smiles == self.smiles)][0]
 
         self.name = curr_drug.name
