@@ -4,3 +4,4 @@ scikit-learn
 chembl-webresource-client
 streamlit
 streamlit-ketcher
+torch
