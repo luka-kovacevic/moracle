@@ -4,7 +4,7 @@ import streamlit_ketcher as sk
 
 st.set_page_config(layout="wide")
 
-smiles_df = pd.read_csv("moracle/data/smiles_test.csv", sep="\t", header=0)
+smiles_df = pd.read_csv("data/smiles_test.csv", sep="\t", header=0)
 
 col1, col2 = st.columns([4, 4])
 
