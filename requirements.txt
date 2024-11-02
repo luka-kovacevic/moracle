@@ -6,3 +6,4 @@ streamlit
 streamlit-ketcher
 torch
 scipy
+rdkit
