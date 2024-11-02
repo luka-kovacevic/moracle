@@ -73,7 +73,7 @@ with col2:
         ## Molecule selection 1
         ########################
 
-        st.subheader("Select molecule:")
+        st.subheader("Select reference molecule:")
 
         st.write("Scroll through the list and select a chemical.")
 
