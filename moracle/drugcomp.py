@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from chembl_webresource_client.new_client import new_client
 
+from tqdm.auto import tqdm
+
 
 class Drug:
     def __init__(self, smiles: str, name=None, chembl_id=None, max_phase=None, indication=None, first_approval=None):
@@ -22,7 +24,6 @@ class Drug:
         similarity = new_client.similarity
 
         res = similarity.filter(smiles=self.smiles, similarity=40).only(['molecule_chembl_id', 'pref_name', 'max_phase', 'first_approval', 'indication_class', 'molecule_structures__canonical_smiles', 'similarity'])
-
         # Create similar drug objects and add ChEMBL info
         sim_drugs_list = [(Drug(drug["molecule_structures"]["canonical_smiles"],
                                 name=drug["pref_name"],
@@ -31,19 +32,21 @@ class Drug:
                                 indication=drug["indication_class"],
                                 first_approval=drug["first_approval"]), drug["similarity"]) for drug in res]
         
-        
-        curr_drug = [drug for drug, sim in sim_drugs_list if (drug.smiles == self.smiles)][0]
+        curr_drug = [drug for drug, sim in sim_drugs_list if (drug.smiles == self.smiles)]
 
-        self.name = curr_drug.name
-        self.chembl_id = curr_drug.chembl_id
-        self.max_phase = curr_drug.max_phase
-        self.indication = curr_drug.indication
-        self.first_approval = curr_drug.first_approval
-        
-        self.similarity = [(drug["molecule_chembl_id"], drug["similarity"]) for drug in res]
+        if len(curr_drug) == 0:
+            return sim_drugs_list
+        else:
+            curr_drug = curr_drug[0]
+            self.name = curr_drug.name
+            self.chembl_id = curr_drug.chembl_id
+            self.max_phase = curr_drug.max_phase
+            self.indication = curr_drug.indication
+            self.first_approval = curr_drug.first_approval
+            
+            self.similarity = [(drug["molecule_chembl_id"], drug["similarity"]) for drug in res]
 
-
-        return sim_drugs_list
+            return sim_drugs_list
     
     def get_top_responders(self):
         gdsc_response = pd.read_excel("./data/GDSC2_fitted_dose_response_24Jul22.xlsx")
@@ -69,5 +72,20 @@ class Drug:
         return cosine_sim
     
 
+def get_best_test_mols(path_to_csv, n=10000):
 
+    smiles_test = pd.read_csv("./data/test.csv")[:n]
+    best_mols = []
+    
+    for i, row in tqdm(smiles_test.iterrows(), total=len(smiles_test)):
+        mol = Drug(row["molecule_smiles"])
+        sim_mols = mol.get_similar_drugs()
+        if len(sim_mols) == 0:
+            continue
+        else:
+            sim_mols_df = pd.DataFrame.from_dict([{"Name":drug.name, "Smiles":drug.smiles, "Sim. Score": np.round(float(sim), 2), "ID":drug.chembl_id, "Trial Phase":drug.max_phase, "Ind.":drug.indication} for drug, sim in sim_mols])
+            sim_mols_df = sim_mols_df[(sim_mols_df["Trial Phase"] != None) & (sim_mols_df["Sim. Score"] > 40)].sort_values("Sim. Score", ascending=False)
+            if len(sim_mols_df) > 1:
+                best_mols.append(mol.smiles)
 
+    return best_mols

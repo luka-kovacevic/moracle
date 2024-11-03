@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import streamlit_ketcher as sk
+from streamlit.components.v1 import html
+from mol_viewer import gen_3dmol_vis, run_wrapper
 
 from drugcomp import Drug
 from prob_success import compute_prob_clin_success
@@ -97,6 +99,8 @@ with col1:
                 st.session_state.df = pd.concat([st.session_state.df, new_row], ignore_index=True)
                 count += 1
 
+        html(run_wrapper("./data/complex_example.zip"), height=1000)
+
 
 ################
 ## Visualiser 2
@@ -141,7 +145,12 @@ with col2:
 
             st.subheader("Visualiser (Reference)")
 
+            html(run_wrapper("./data/complex_example.zip"), height=1000)
+
+            curr_drug = Drug(st.session_state.selected_chemical["Smiles"])
+
             curr_drug = Drug(molecule_smiles1)
+
             similar_drugs = curr_drug.get_similar_drugs()
             similar_drugs_df = pd.DataFrame.from_dict([{"Name":drug.name, "Smiles":drug.smiles, "Sim. Score": np.round(float(sim), 2), "ID":drug.chembl_id, "Trial Phase":drug.max_phase, "Ind.":drug.indication} for drug, sim in similar_drugs])
             similar_drugs_df = similar_drugs_df[~similar_drugs_df["Ind."].isna()].sort_values(by="Sim. Score", ascending=False)
@@ -256,3 +265,6 @@ with col2:
                 count += 1
                 st.rerun()
 
+            sk.st_ketcher(molecule_smiles1, key=chemical_name1 + '_1')
+
+            html(run_wrapper("./data/complex_example.zip"))
