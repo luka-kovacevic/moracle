@@ -8,7 +8,7 @@ if len(sys.argv) > 1:
     try:
         K = int(sys.argv[1])
     except ValueError:
-        K = None if sys.argv[1] != 'demo' else 'demo'
+        K = None if sys.argv[1] not in ['demo', 'demo2'] else sys.argv[1]
 else:
     K = 10
 
@@ -34,6 +34,13 @@ else:
         demo_ids = []
         for protein in ['BRD4', 'sEH', 'HSA']:
             for name in ['molecule1', 'molecule1mod', 'molecule4']:
+                demo_ids.append(f'{name}_{protein}')
+        protein_smile['id'] = demo_ids
+
+    elif K == 'demo2':
+        demo_ids = []
+        for protein in ['BRD4', 'sEH', 'HSA']:
+            for name in ['chembl1', 'chembl2', 'chembl3']:
                 demo_ids.append(f'{name}_{protein}')
             
         protein_smile['id'] = demo_ids

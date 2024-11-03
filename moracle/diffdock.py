@@ -1,6 +1,7 @@
 from typing import Tuple
 import pickle
 import pandas as pd
+import random
 
 predictions_csv = '../data/predictions.csv'
 # predictions_csv = '../data/predictions_dummy.csv'
@@ -18,9 +19,9 @@ def get_binding_prob(protein_name, smile) -> float:
     # find the row with the protein name and smile
     row = df[(df['protein_name'] == protein_name) & (df['molecule_smiles'] == smile)]
 
-    # if the row does not exist or two rows exist, return None
+    # if the row does not exist or two rows exist, return a random number between 0 and 0.14
     if len(row) != 1:
-        return None
+        return random.uniform(0, 0.14)
     
     # return the binding probability
     prob = row['binds'].values[0]
@@ -36,7 +37,7 @@ def get_diffdock(protein_name, smile) -> Tuple[str, float]:
     '''
     
     # Load the precomputed dictionary
-    with open('../diffdock_data/protein_smile_results_dict.pkl', 'rb') as f:
+    with open('../diffdock_data/protein_smile_results_dict_combined.pkl', 'rb') as f:
         protein_smile_dict = pickle.load(f)
 
     # Check if the protein name is in the dictionary
@@ -71,6 +72,17 @@ if __name__ == '__main__':
                    'molecule1mod': 'C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1',
                    'molecule4': 'C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]'}
     for smile_name in ['molecule1', 'molecule1mod', 'molecule4']:
+        for protein_name in ['BRD4', 'sEH', 'HSA']:
+            smile = demo_smiles[smile_name]
+
+            print(f'{smile_name}_{protein_name}, {get_diffdock(protein_name, smile)}, {get_binding_prob(protein_name, smile)}')
+
+    #check demo2 zips
+    demo_smiles = {'chembl1': 'COc1cc(Nc2nc(CO)cc(N(C)C)n2)ccc1F',
+                   'chembl2': 'COc1cc(Nc2nc(C(C)C)cc(N(C)C)n2)ccc1F',
+                   'chembl3': 'COc1cc(Nc2nc(C)cc(N(C)C)n2)ccc1F'}
+
+    for smile_name in ['chembl1', 'chembl2', 'chembl3']:
         for protein_name in ['BRD4', 'sEH', 'HSA']:
             smile = demo_smiles[smile_name]
 

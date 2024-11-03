@@ -1,0 +1,4 @@
+molecule_smiles
+COc1cc(Nc2nc(CO)cc(N(C)C)n2)ccc1F
+COc1cc(Nc2nc(C(C)C)cc(N(C)C)n2)ccc1F
+COc1cc(Nc2nc(C)cc(N(C)C)n2)ccc1F
