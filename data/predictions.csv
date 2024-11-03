@@ -1,0 +1,10 @@
+,binds,molecule_smiles,protein_name
+186,0.0030345,C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],BRD4
+187,2.685e-05,C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],HSA
+188,2.266666666666666e-07,C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],sEH
+192,0.2975166666666666,C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],BRD4
+193,0.0001723333333333,C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],HSA
+194,6.16e-06,C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],sEH
+0,0.0001342,C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1,BRD4
+1,0.002341,C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1,HSA
+2,7.472e-05,C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1,sEH
