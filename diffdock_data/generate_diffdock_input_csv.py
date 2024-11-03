@@ -8,7 +8,7 @@ if len(sys.argv) > 1:
     try:
         K = int(sys.argv[1])
     except ValueError:
-        K = None
+        K = None if sys.argv[1] != 'demo' else 'demo'
 else:
     K = 10
 
@@ -19,7 +19,7 @@ df = pd.read_csv('belka/test.csv')
 # with open('protein_smile_results_dict.pkl', 'rb') as f:
 #     protein_smile_dict = pickle.load(f)
 
-if K is not None:
+if K is None:
     # Select K random ids
     ids = random.sample(range(1, len(df)), K)
     protein_smile = df.iloc[ids]
@@ -30,7 +30,15 @@ else:
     protein_smile = pd.read_csv('protein_smile_raw.csv')
 
     # add an id column to the dataframe
-    protein_smile['id'] = range(1, len(protein_smile) + 1)
+    if K == 'demo':
+        demo_ids = []
+        for protein in ['BRD4', 'sEH', 'HSA']:
+            for name in ['molecule1', 'molecule1mod', 'molecule4']:
+                demo_ids.append(f'{name}_{protein}')
+            
+        protein_smile['id'] = demo_ids
+    else:
+        protein_smile['id'] = range(1, len(protein_smile) + 1)
 
 
 # populate protein_smile_results_dict with ids, None

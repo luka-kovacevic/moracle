@@ -1,0 +1,4 @@
+molecule_smiles
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]
+C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1
+C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]

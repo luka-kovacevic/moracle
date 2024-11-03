@@ -64,3 +64,14 @@ if __name__ == '__main__':
     smile = '[[[[[COc1cc(C#N)ccc1-c1ccc2c(c1)c(C(=O)N[Dy])cn2[C@H]1CCCN(C(=O)C2CCCC2(F)F)C1'
     print(get_diffdock(protein_name, smile))
     print(get_binding_prob(protein_name, smile))
+
+
+    #check demo zips
+    demo_smiles = {'molecule1': 'C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]',
+                   'molecule1mod': 'C#CCCC[C@@H](C(N[Dy])=O)Nc1nc(Nc2cc(OO)c(O)cc2)nc(Nc2cc(OC)c(F)cc2)n1',
+                   'molecule4': 'C#CCCC[C@H](Nc1nc(NCc2ccc(C)cc2N2CCCC2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]'}
+    for smile_name in ['molecule1', 'molecule1mod', 'molecule4']:
+        for protein_name in ['BRD4', 'sEH', 'HSA']:
+            smile = demo_smiles[smile_name]
+
+            print(f'{smile_name}_{protein_name}, {get_diffdock(protein_name, smile)}, {get_binding_prob(protein_name, smile)}')
