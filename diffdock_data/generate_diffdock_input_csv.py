@@ -23,7 +23,7 @@ if K is not None:
     # Select K random ids
     ids = random.sample(range(1, len(df)), K)
     protein_smile = df.iloc[ids]
-    protein_smile = protein_smile[['id', 'molecule_smiles', 'protein_name']]
+    protein_smile = protein_smile[['molecule_smiles', 'protein_name', 'id']]
 
 else:
     # read in the protein-smile combinations from protein_smile_raw.csv

@@ -8,4 +8,4 @@ python -m inference --config $inference_args  --protein_ligand_csv $protein_liga
 
 cd ../diffdock_data
 
-python -m postprocess.py 
+python postprocess.py 

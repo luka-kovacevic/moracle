@@ -15,10 +15,10 @@ def get_diffdock(protein_name, smile) -> Tuple[str, float]:
 
     # Check if the protein name is in the dictionary
     if protein_name not in protein_smile_dict:
-        return None
+        return None, None
     
     if smile not in protein_smile_dict[protein_name]:
-        return None
+        return None, None
     
     experiment_id, confidence = protein_smile_dict[protein_name][smile]
     
@@ -26,5 +26,8 @@ def get_diffdock(protein_name, smile) -> Tuple[str, float]:
     
 if __name__ == '__main__':
     protein_name = 'BRD4'
-    smile = 'Cc1onc(-c2ccccc2)c1C(=O)N1CCC[C@@H](c2cccc(-c3ccc(C4CCCC4)cc3)c2)[C@@H]1C(=O)N[Dy]'
+    smile = 'C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy]'
+    print(get_diffdock(protein_name, smile))
+
+    smile = 'COc1cc(C#N)ccc1-c1ccc2c(c1)c(C(=O)N[Dy])cn2[C@H]1CCCN(C(=O)C2CCCC2(F)F)C1'
     print(get_diffdock(protein_name, smile))

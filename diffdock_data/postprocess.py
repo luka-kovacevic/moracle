@@ -4,7 +4,7 @@ import zipfile
 import os
 
 # Paths
-csv_path = 'protein_smile_raw.csv'
+csv_path = 'diffdock_input.csv' # 'protein_smile_raw.csv'
 pkl_path = 'protein_smile_results_dict.pkl'
 proteins_dir = 'proteins/'
 results_dir = 'results/'
@@ -18,14 +18,16 @@ with open(pkl_path, 'rb') as pkl_file:
 df = pd.read_csv(csv_path)
 
 for index, row in df.iterrows():
-    protein_name = row['protein_name']
-    molecule_smiles = row['molecule_smiles']
+    protein_name = row['protein_path'].split('/')[-1].split('.')[0] #row['protein_name']
+    molecule_smiles = row['ligand_description'] #row['molecule_smiles']
 
     # Get the corresponding id from the dictionary
-    id, confidence = protein_smile_results_dict.get(protein_name, {}).get(molecule_smiles)
+    id, confidence = protein_smile_results_dict.get(protein_name, {}).get(molecule_smiles, (None, None))
     if id is None:
         continue
     id = str(id)
+
+    print(id, confidence)
 
     # Paths to the protein and molecule files
     protein_file = os.path.join(proteins_dir, f'{protein_name}.pdb')
@@ -44,8 +46,7 @@ for index, row in df.iterrows():
 
     if confidence is not None:
         confidence = float(confidence)
-    else:
-        continue
+        
     protein_smile_results_dict[protein_name][molecule_smiles] = (id, confidence)
 
     # Create a zip file containing the protein and molecule files

@@ -1,4 +1,4 @@
 molecule_smiles,protein_name
-Cc1onc(-c2ccccc2)c1C(=O)N1CCC[C@@H](c2cccc(-c3ccc(C4CCCC4)cc3)c2)[C@@H]1C(=O)N[Dy],BRD4
-O=C(N[Dy])c1cccc(I)c1Nc1nc(Nc2cncc(F)c2)nc(Nc2ccc3[nH]c(=O)[nH]c3c2)n1,BRD4
-COC(CNc1nc(Nc2nc(Cl)c(C=O)c(Cl)n2)nc(Nc2ccccc2C(=O)c2ccccc2C(=O)N[Dy])n1)C1CCOC1,BRD4
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],BRD4
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],sEH
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],HSA
