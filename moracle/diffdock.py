@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 import random
 
-predictions_csv = '../data/predictions.csv'
+predictions_csv = './data/predictions.csv'
 # predictions_csv = '../data/predictions_dummy.csv'
 
 
@@ -37,7 +37,7 @@ def get_diffdock(protein_name, smile) -> Tuple[str, float]:
     '''
     
     # Load the precomputed dictionary
-    with open('../diffdock_data/protein_smile_results_dict_combined.pkl', 'rb') as f:
+    with open('./diffdock_data/protein_smile_results_dict_combined.pkl', 'rb') as f:
         protein_smile_dict = pickle.load(f)
 
     # Check if the protein name is in the dictionary
@@ -49,7 +49,7 @@ def get_diffdock(protein_name, smile) -> Tuple[str, float]:
     
     experiment_id, confidence = protein_smile_dict[protein_name][smile]
     
-    return f'../diffdock_data/zips/{experiment_id}.zip', confidence
+    return f'./diffdock_data/zips/{experiment_id}.zip', confidence
     
 if __name__ == '__main__':
     protein_name = 'BRD4'
