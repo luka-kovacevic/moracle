@@ -1,0 +1,4 @@
+molecule_smiles,protein_name
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],BRD4
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],sEH
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],HSA

@@ -1,0 +1,4 @@
+ligand_description,protein_path,complex_name,protein_sequence
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],../diffdock_data/proteins/BRD4.pdb,complex_1,
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],../diffdock_data/proteins/sEH.pdb,complex_2,
+C#CCCC[C@H](Nc1nc(Nc2ccc(F)c(OC)c2)nc(Nc2ccc(F)c(OC)c2)n1)C(=O)N[Dy],../diffdock_data/proteins/HSA.pdb,complex_3,
