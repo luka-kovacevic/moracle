@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import streamlit_ketcher as sk
+from streamlit.components.v1 import html
+from mol_viewer import gen_3dmol_vis, run_wrapper
 
 from drugcomp import Drug
 
@@ -62,6 +64,8 @@ with col1:
 
         sk.st_ketcher(molecule_smiles, key=chemical_name + '_')
 
+        html(run_wrapper("./data/complex_example.zip"), height=1000)
+
 
 ################
 ## Visualiser 2
@@ -107,6 +111,8 @@ with col2:
             st.subheader("Visualiser (Mol. 2)")
             sk.st_ketcher(molecule_smiles1, key=chemical_name1 + '_1')
 
+            html(run_wrapper("./data/complex_example.zip"), height=1000)
+
         else: 
             curr_drug = Drug(st.session_state.selected_chemical["Smiles"])
             similar_drugs = curr_drug.get_similar_drugs()
@@ -133,3 +139,5 @@ with col2:
             st.subheader("Visualiser (Mol. 2)")
 
             sk.st_ketcher(molecule_smiles1, key=chemical_name1 + '_1')
+
+            html(run_wrapper("./data/complex_example.zip"))
