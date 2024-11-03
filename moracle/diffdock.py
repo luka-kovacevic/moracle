@@ -3,6 +3,8 @@ import pickle
 import pandas as pd
 
 predictions_csv = '../data/predictions.csv'
+# predictions_csv = '../data/predictions_dummy.csv'
+
 
 def get_binding_prob(protein_name, smile) -> float:
     '''
@@ -55,5 +57,10 @@ if __name__ == '__main__':
     print(get_binding_prob(protein_name, smile))
 
     smile = 'COc1cc(C#N)ccc1-c1ccc2c(c1)c(C(=O)N[Dy])cn2[C@H]1CCCN(C(=O)C2CCCC2(F)F)C1'
+    print(get_diffdock(protein_name, smile))
+    print(get_binding_prob(protein_name, smile))
+
+    # malformed smile so definitely won't be in the dictionary
+    smile = '[[[[[COc1cc(C#N)ccc1-c1ccc2c(c1)c(C(=O)N[Dy])cn2[C@H]1CCCN(C(=O)C2CCCC2(F)F)C1'
     print(get_diffdock(protein_name, smile))
     print(get_binding_prob(protein_name, smile))
