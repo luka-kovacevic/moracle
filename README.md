@@ -3,4 +3,4 @@ Molecule oracle for predicting clinical viability from binding affinity and hist
 
 Project for the EF-Valence Labs Bio x AI Hackathon.
 
-[moracle-demo](moracle.gif)
+![moracle-demo](moracle.gif)
