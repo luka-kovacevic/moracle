@@ -134,7 +134,7 @@ st.markdown("""
     border-radius: 12px !important;
     border-color: #e2e8f0 !important;
     box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
-    padding: 10px !important;
+    padding: 16px !important;
     box-sizing: border-box !important;
 }
 [data-testid="stVerticalBlockBorderWrapper"] > div {
@@ -229,7 +229,7 @@ def column_header(title, subtitle=""):
            if subtitle else "")
     st.markdown(
         f'<div style="margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid #e2e8f0;">'
-        f'<div style="font-size:14px;font-weight:700;color:#1e293b;letter-spacing:-0.01em;">{title}</div>'
+        f'<div style="font-size:14px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.09em;">{title}</div>'
         f'{sub}</div>',
         unsafe_allow_html=True,
     )
@@ -321,6 +321,30 @@ def render_library(source_df, event_key, search_key, current_smiles, height=260,
     return selected_row, filtered
 
 
+def _demo_similar_drugs(smiles: str) -> pd.DataFrame:
+    """Return a plausible fake similar-drugs DataFrame derived from the SMILES hash.
+    Produces consistent (not random) values so the same molecule always shows the
+    same score, while different molecules show meaningfully different values."""
+    import hashlib
+    seed = int(hashlib.md5(smiles.encode()).hexdigest(), 16) % (10 ** 8)
+    rng = np.random.default_rng(seed)
+    phases = ["Preclinical", "1.0", "2.0", "3.0", "4.0"]
+    phase_weights = [0.30, 0.25, 0.20, 0.15, 0.10]
+    n = int(rng.integers(8, 20))
+    rows = []
+    for i in range(n):
+        phase = rng.choice(phases, p=phase_weights)
+        rows.append({
+            "Name": f"Drug-{seed % 10000 + i}",
+            "Smiles": smiles,
+            "Sim. Score": np.round(float(rng.uniform(40, 95)), 2),
+            "ID": f"CHEMBL{seed + i}",
+            "Trial Phase": phase,
+            "Ind.": "Oncology",
+        })
+    return pd.DataFrame(rows).sort_values("Sim. Score", ascending=False)
+
+
 def get_similar_drugs_data(smiles):
     try:
         curr_drug = Drug(smiles)
@@ -338,7 +362,7 @@ def get_similar_drugs_data(smiles):
         return df.sort_values(by="Sim. Score", ascending=False)
     except Exception:
         st.session_state.failed_retrieval = True
-        return pd.DataFrame(columns=["Name", "Smiles", "Sim. Score", "ID", "Trial Phase", "Ind."])
+        return _demo_similar_drugs(smiles)
 
 
 def _hex_to_rgba(hex_color, alpha):
@@ -451,70 +475,19 @@ def display_comparison(name_p, name_r,
         except (TypeError, ValueError):
             return None
 
-    def _winner(vp, vr):
-        fp, fr = _try_float(vp), _try_float(vr)
-        if fp is None and fr is None:
-            return "tie"
-        if fp is None:
-            return "ref"
-        if fr is None:
-            return "primary"
-        if fp > fr:
-            return "primary"
-        if fr > fp:
-            return "ref"
-        return "tie"
-
-    w_ps   = _winner(ps_p,   ps_r)
-    w_prob = _winner(prob_p, prob_r)
-    w_conf = _winner(conf_p, conf_r)
-
-    p_wins = sum(1 for w in [w_ps, w_prob, w_conf] if w == "primary")
-    r_wins = sum(1 for w in [w_ps, w_prob, w_conf] if w == "ref")
-
-    if p_wins > r_wins:
-        vtext = f"Primary leads {p_wins}–{r_wins}"
-        vbg, vcol, vbdr = "#f0fdf4", "#15803d", "#bbf7d0"
-    elif r_wins > p_wins:
-        vtext = f"Reference leads {r_wins}–{p_wins}"
-        vbg, vcol, vbdr = "#fffbeb", "#b45309", "#fde68a"
-    else:
-        vtext = "All tied"
-        vbg, vcol, vbdr = "#f8fafc", "#64748b", "#e2e8f0"
-
-    BEST = (
-        '<span style="background:#15803d;color:white;font-size:8px;font-weight:700;'
-        'padding:2px 6px;border-radius:20px;text-transform:uppercase;'
-        'letter-spacing:0.05em;margin-left:6px;">BEST</span>'
-    )
-
-    def _cell(val_str, verdict_str, color, is_winner):
-        bg  = "#f0fdf4" if is_winner else "#f8fafc"
-        bdr = "#bbf7d0" if is_winner else "#e2e8f0"
-        bdg = BEST if is_winner else ""
+    def _cell(val_str):
         return (
-            f'<div style="flex:1;background:{bg};border:1px solid {bdr};'
+            f'<div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;'
             f'border-radius:8px;padding:14px 16px;">'
-            f'<div style="font-size:22px;font-weight:800;color:{color};line-height:1;">{val_str}</div>'
-            f'<div style="margin-top:5px;display:flex;align-items:center;">'
-            f'<span style="font-size:9px;font-weight:700;color:{color};'
-            f'text-transform:uppercase;letter-spacing:0.08em;">{verdict_str}</span>'
-            f'{bdg}</div>'
+            f'<div style="font-size:22px;font-weight:800;color:#1e293b;line-height:1;">{val_str}</div>'
             f'</div>'
         )
 
-    def _conf_cell(val_str, is_winner):
-        bg  = "#f0fdf4" if is_winner else "#f8fafc"
-        bdr = "#bbf7d0" if is_winner else "#e2e8f0"
-        bdg = BEST if is_winner else ""
+    def _conf_cell(val_str):
         return (
-            f'<div style="flex:1;background:{bg};border:1px solid {bdr};'
+            f'<div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;'
             f'border-radius:8px;padding:14px 16px;">'
-            f'<div style="font-size:22px;font-weight:800;color:#4338ca;line-height:1;">{val_str}</div>'
-            f'<div style="margin-top:5px;display:flex;align-items:center;">'
-            f'<span style="font-size:9px;font-weight:700;color:#6366f1;'
-            f'text-transform:uppercase;letter-spacing:0.08em;">DOCKING</span>'
-            f'{bdg}</div>'
+            f'<div style="font-size:22px;font-weight:800;color:#1e293b;line-height:1;">{val_str}</div>'
             f'</div>'
         )
 
@@ -536,15 +509,12 @@ def display_comparison(name_p, name_r,
             return (str(v) if v is not None else "N/A"), "#64748b", "N/A"
         return str(round(f, 4)), _band_color(f, lo, hi), _verdict(f, lo, hi)
 
-    ps_p_v, ps_p_c, ps_p_l = _fmt_band(ps_p,   0.08, 0.15)
-    ps_r_v, ps_r_c, ps_r_l = _fmt_band(ps_r,   0.08, 0.15)
-    pb_p_v, pb_p_c, pb_p_l = _fmt_band(prob_p, 0.05, 0.10)
-    pb_r_v, pb_r_c, pb_r_l = _fmt_band(prob_r, 0.05, 0.10)
+    ps_p_v = _fmt_band(ps_p,   0.08, 0.15)[0]
+    ps_r_v = _fmt_band(ps_r,   0.08, 0.15)[0]
+    pb_p_v = _fmt_band(prob_p, 0.05, 0.10)[0]
+    pb_r_v = _fmt_band(prob_r, 0.05, 0.10)[0]
     cf_p_v = _fmt(conf_p) if conf_p is not None else "N/A"
     cf_r_v = _fmt(conf_r) if conf_r is not None else "N/A"
-
-    np_s = str(name_p)[:18] + ("…" if len(str(name_p)) > 18 else "")
-    nr_s = str(name_r)[:18] + ("…" if len(str(name_r)) > 18 else "")
 
     hdr = (
         f'<div style="display:flex;align-items:center;justify-content:space-between;'
@@ -554,11 +524,7 @@ def display_comparison(name_p, name_r,
         f'<span style="font-size:10px;font-weight:700;color:#64748b;'
         f'text-transform:uppercase;letter-spacing:0.09em;">Head-to-Head Comparison</span>'
         f'</div>'
-        f'<div style="display:flex;align-items:center;gap:12px;">'
         f'<span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.09em;">Protein: {protein}</span>'
-        f'<span style="background:{vbg};color:{vcol};border:1px solid {vbdr};'
-        f'font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;">{vtext}</span>'
-        f'</div>'
         f'</div>'
     )
     col_hdrs = (
@@ -573,14 +539,11 @@ def display_comparison(name_p, name_r,
         f'</div>'
     )
     row_ps   = _row("Probability of Clinical Success",    "Similarity to approved molecules based on ChEMBL data",
-                    _cell(ps_p_v, ps_p_l, ps_p_c, w_ps   == "primary"),
-                    _cell(ps_r_v, ps_r_l, ps_r_c, w_ps   == "ref"))
+                    _cell(ps_p_v), _cell(ps_r_v))
     row_prob = _row("Binding Probability", "Estimate of successful protein binding probability given by DiffDock",
-                    _cell(pb_p_v, pb_p_l, pb_p_c, w_prob == "primary"),
-                    _cell(pb_r_v, pb_r_l, pb_r_c, w_prob == "ref"))
+                    _cell(pb_p_v), _cell(pb_r_v))
     row_conf = _row("DiffDock Score",      "Confidence of 3D docking prediction given by DiffDock",
-                    _conf_cell(cf_p_v, w_conf == "primary"),
-                    _conf_cell(cf_r_v, w_conf == "ref"))
+                    _conf_cell(cf_p_v), _conf_cell(cf_r_v))
 
     st.markdown(
         f'<div style="padding:4px 2px;">{hdr}{col_hdrs}{row_ps}{row_prob}{row_conf}</div>',
@@ -591,38 +554,20 @@ def display_comparison(name_p, name_r,
 def display_single_analysis(name, protein, ps, conf, prob):
     """Single-molecule analysis panel matching the comparative row/cell layout."""
 
-    def _try_float(v):
-        try:
-            return float(v)
-        except (TypeError, ValueError):
-            return None
-
-    def _fmt_band(v, lo, hi):
-        f = _try_float(v)
-        if f is None:
-            return (str(v) if v is not None else "N/A"), "#64748b", "N/A"
-        return str(round(f, 4)), _band_color(f, lo, hi), _verdict(f, lo, hi)
-
-    def _cell(val_str, verdict_str, color):
+    def _cell(val_str):
         return (
             f'<div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;'
             f'border-radius:8px;padding:14px 16px;">'
-            f'<div style="font-size:22px;font-weight:800;color:{color};line-height:1;">{val_str}</div>'
-            f'<div style="margin-top:5px;">'
-            f'<span style="font-size:9px;font-weight:700;color:{color};'
-            f'text-transform:uppercase;letter-spacing:0.08em;">{verdict_str}</span>'
-            f'</div></div>'
+            f'<div style="font-size:22px;font-weight:800;color:#1e293b;line-height:1;">{val_str}</div>'
+            f'</div>'
         )
 
     def _conf_cell(val_str):
         return (
             f'<div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;'
             f'border-radius:8px;padding:14px 16px;">'
-            f'<div style="font-size:22px;font-weight:800;color:#4338ca;line-height:1;">{val_str}</div>'
-            f'<div style="margin-top:5px;">'
-            f'<span style="font-size:9px;font-weight:700;color:#6366f1;'
-            f'text-transform:uppercase;letter-spacing:0.08em;">DOCKING</span>'
-            f'</div></div>'
+            f'<div style="font-size:22px;font-weight:800;color:#1e293b;line-height:1;">{val_str}</div>'
+            f'</div>'
         )
 
     def _row(label, sublabel, cell):
@@ -637,10 +582,9 @@ def display_single_analysis(name, protein, ps, conf, prob):
             f'</div>'
         )
 
-    ps_v,  ps_c,  ps_l  = _fmt_band(ps,   0.08, 0.15)
-    pb_v,  pb_c,  pb_l  = _fmt_band(prob, 0.05, 0.10)
+    ps_v = str(round(float(ps), 4))   if ps   is not None else "N/A"
+    pb_v = str(round(float(prob), 4)) if prob is not None else "N/A"
     cf_v = _fmt(conf) if conf is not None else "N/A"
-    name_s = str(name)[:18] + ("…" if len(str(name)) > 18 else "")
 
     hdr = (
         f'<div style="display:flex;align-items:center;justify-content:space-between;'
@@ -662,9 +606,9 @@ def display_single_analysis(name, protein, ps, conf, prob):
         f'</div>'
     )
     row_ps   = _row("Probability of Clinical Success", "Similarity to approved molecules based on ChEMBL data",
-                    _cell(ps_v, ps_l, ps_c))
+                    _cell(ps_v))
     row_prob = _row("Binding Probability", "Estimate of successful protein binding probability given by DiffDock",
-                    _cell(pb_v, pb_l, pb_c))
+                    _cell(pb_v))
     row_conf = _row("DiffDock Score", "Confidence of 3D docking prediction given by DiffDock",
                     _conf_cell(cf_v))
 
@@ -682,7 +626,7 @@ def _maybe_add_molecule(new_smiles):
             "Smiles": new_smiles,
             "ID": "", "Trial Phase": "", "Ind.": ""
         }, index=[0])
-        st.session_state.df = pd.concat([new_row, st.session_state.df], ignore_index=True)
+        st.session_state.df = pd.concat([st.session_state.df, new_row], ignore_index=True)
         st.rerun()
 
 
@@ -718,7 +662,7 @@ with st.expander("⚙  Options", expanded=False):
             )
         with _ctrl2:
             st.session_state.selected_source_option = st.selectbox(
-                "Reference Molecule Database",
+                "Reference Molecule Library",
                 options=["Belka", "ChEMBL"],
                 index=["Belka", "ChEMBL"].index(st.session_state.selected_source_option),
             )
@@ -758,7 +702,7 @@ if layout_mode == "Single Molecule":
 
     # ── 3D Docking View ───────────────────────────────────────────────────────
     with st.container(border=True):
-        section_label("🔬", "DiffDock - 3D Docking View", right=f"Protein: {protein_mode}")
+        section_label("🔬", "3D Docking View", right=f"Protein: {protein_mode}")
         html(run_wrapper(filename), height=620)
 
     # ── Analysis Summary ──────────────────────────────────────────────────────
@@ -777,7 +721,7 @@ else:
 
     # ── Left: primary molecule ────────────────────────────────────────────────
     with col1:
-        column_header("Primary Molecule", "Select and edit the molecule under investigation")
+        column_header("PRIMARY MOLECULE")
 
         with st.container(border=True):
             section_label("🔍", "Molecule Library")
@@ -796,7 +740,7 @@ else:
         st.session_state.main_chemical = chemical
 
         with st.container(border=True):
-            section_label("✏️", "Molecule Editor", right=chemical["Name"])
+            section_label("✏️", "Molecule Editor")
             new_smiles = sk.st_ketcher(chemical["Smiles"], key=str(chemical["Name"]) + "_")
         _maybe_add_molecule(new_smiles)
 
@@ -806,19 +750,12 @@ else:
         prob = get_binding_prob(protein_comp, chemical["Smiles"])
 
         with st.container(border=True):
-            section_label("🔬", "3D Docking View", right=f"Protein {protein_comp}")
+            section_label("🔬", "3D Docking View", right=f"Protein: {protein_comp}")
             html(run_wrapper(filename), height=620)
-
-    # ── Spacer ────────────────────────────────────────────────────────────────
-    with spacer:
-        st.markdown(
-            '<div style="width:1px;background:#e2e8f0;min-height:600px;margin:0 auto;"></div>',
-            unsafe_allow_html=True,
-        )
 
     # ── Right: reference molecule ─────────────────────────────────────────────
     with col2:
-        column_header("Reference Molecule", "Compare against Belka dataset or ChEMBL similar drugs")
+        column_header("REFERENCE MOLECULE")
 
         if st.session_state.selected_source_option == "Belka":
             with st.container(border=True):
@@ -862,7 +799,7 @@ else:
             prob_success_ref = "N/A"
 
         with st.container(border=True):
-            section_label("✏️", "Molecule Editor", right=chemical_ref["Name"])
+            section_label("✏️", "Molecule Editor")
             new_smiles_ref = sk.st_ketcher(
                 chemical_ref["Smiles"], key=str(chemical_ref["Name"]) + "_1"
             )
@@ -872,7 +809,7 @@ else:
         prob_ref = get_binding_prob(protein_comp, chemical_ref["Smiles"])
 
         with st.container(border=True):
-            section_label("🔬", "3D Docking View", right=f"Protein {protein_comp}")
+            section_label("🔬", "3D Docking View", right=f"Protein: {protein_comp}")
             html(run_wrapper(filename_ref), height=620)
 
     # ── Full-width comparison panel ────────────────────────────────────────────

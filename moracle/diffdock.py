@@ -1,7 +1,6 @@
 from typing import Tuple
 import pickle
 import pandas as pd
-import random
 
 predictions_csv = './data/predictions.csv'
 # predictions_csv = '../data/predictions_dummy.csv'
@@ -19,9 +18,11 @@ def get_binding_prob(protein_name, smile) -> float:
     # find the row with the protein name and smile
     row = df[(df['protein_name'] == protein_name) & (df['molecule_smiles'] == smile)]
 
-    # if the row does not exist or two rows exist, return a random number between 0 and 0.14
+    # if the row does not exist or two rows exist, return a deterministic demo value
     if len(row) != 1:
-        return random.uniform(0, 0.14)
+        import hashlib
+        seed = int(hashlib.md5(f"{protein_name}{smile}".encode()).hexdigest(), 16)
+        return round(0.02 + (seed % 1000) / 1000 * 0.12, 4)
     
     # return the binding probability
     prob = row['binds'].values[0]
