@@ -618,7 +618,7 @@ def display_single_analysis(name, protein, ps, conf, prob):
     )
 
 
-def _maybe_add_molecule(new_smiles):
+def _maybe_add_molecule(new_smiles, selected_key="selected_chemical"):
     if new_smiles and new_smiles not in st.session_state.df["Smiles"].tolist():
         st.session_state.count += 1
         new_row = pd.DataFrame({
@@ -627,6 +627,7 @@ def _maybe_add_molecule(new_smiles):
             "ID": "", "Trial Phase": "", "Ind.": ""
         }, index=[0])
         st.session_state.df = pd.concat([st.session_state.df, new_row], ignore_index=True)
+        st.session_state[selected_key] = new_row.iloc[0].to_dict()
         st.rerun()
 
 
@@ -803,7 +804,7 @@ else:
             new_smiles_ref = sk.st_ketcher(
                 chemical_ref["Smiles"], key=str(chemical_ref["Name"]) + "_1"
             )
-        _maybe_add_molecule(new_smiles_ref)
+        _maybe_add_molecule(new_smiles_ref, "selected_chemical1")
 
         filename_ref, confidence_ref = get_diffdock(protein_comp, chemical_ref["Smiles"])
         prob_ref = get_binding_prob(protein_comp, chemical_ref["Smiles"])
